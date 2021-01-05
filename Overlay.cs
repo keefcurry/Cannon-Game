@@ -11,10 +11,11 @@ namespace CannonGame
     public class Overlay : Sprite
     {
 
+        Rectangle r;
         private int x = 512, y = 650; 
         public Overlay(Texture2D texture) : base(texture, null)
         {
-
+            r = new Rectangle(Globals.viewportRectangle.Width - 250, y - ((int)Globals.Scale / 2), (int)Globals.Scale, (int)Globals.Scale);
         }
 
 
@@ -24,6 +25,7 @@ namespace CannonGame
             FillShipStatus(spriteBatch);
             DrawScore(spriteBatch);
             DrawAmmo(spriteBatch);
+            DrawControls(spriteBatch);
             //base.Draw(spriteBatch);
         }
 
@@ -49,10 +51,18 @@ namespace CannonGame
 
         public void DrawAmmo(SpriteBatch spriteBatch)
         {
-            string s = "" + Cannon.hitboxes.Count;
-            Rectangle r = new Rectangle(Globals.viewportRectangle.Width - 250, y - ((int)Globals.Scale/2), (int)Globals.Scale, (int)Globals.Scale);
-            spriteBatch.Draw(Game1.Bullet, r, Color.White);
-            spriteBatch.DrawString(Game1.spriteFont, s, new Vector2(r.X+70, r.Y+70), Color.White);
+            if(Cannon.hitboxes != null)
+            {
+                string s = "" + Cannon.hitboxes.Count;
+                spriteBatch.Draw(Game1.Bullet, r, Color.White);
+                spriteBatch.DrawString(Game1.spriteFont, s, new Vector2(r.X+70, r.Y+70), Color.White);
+            }
+
+        }
+
+        public void DrawControls(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Game1.Controls, new Rectangle(r.X - 100, r.Y, (int)Globals.Scale, (int)Globals.Scale), Color.White);
         }
     }
 }

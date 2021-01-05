@@ -39,5 +39,6 @@ namespace CannonGame
         public Keys Shoot;
         public Keys RotateLeft;
         public Keys RotateRight;
+        public Keys Pause;
     }
 }

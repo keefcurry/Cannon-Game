@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,6 +19,9 @@ namespace CannonGame
         public Overlay _overlay;
         public Animation astroidAnimation;
         private GraphicsDeviceManager graphics;
+        bool isPause = false;
+        bool isPauseKeyDownHandled = false;
+
 
         public AstroidGame(GraphicsDeviceManager _graphics)
         {
@@ -28,7 +32,8 @@ namespace CannonGame
                 {
                     RotateLeft = Keys.A,
                     RotateRight = Keys.D,
-                    Shoot = Keys.Space
+                    Shoot = Keys.Space,
+                    Pause = Keys.E
                 },
                 Rotation = 0.0f,
                 Color = Color.White,
@@ -64,14 +69,22 @@ namespace CannonGame
 
         public virtual void Update(GameTime gameTime)
         {
-            if(Globals.ShipsStatus >= 1)
-                _base.Update(gameTime, _astriods);
-            Cannon.Update(gameTime, _astriods);
-            foreach (Sprite astroid in _astriods)
+            CheckForPause(Cannon.ReturnPause);
+            //CheckForPause();
+            if(!isPause)
             {
-                astroid.Update(gameTime, _astriods);
-                astroid.HitBase(_base);
+                if (Globals.ShipsStatus >= 1)
+                    _base.Update(gameTime, _astriods);
+                Cannon.Update(gameTime, _astriods);
+                foreach (Sprite astroid in _astriods)
+                {
+                    astroid.Update(gameTime, _astriods);
+                    astroid.HitBase(_base);
+                }
             }
+
+            Debug.WriteLine(isPause);
+
 
         }
 
@@ -85,6 +98,7 @@ namespace CannonGame
         /// <param name="spriteBatch"></param>
         public virtual void Draw(SpriteBatch spriteBatch)
         {
+
             spriteBatch.Draw(Game1.Background, new Rectangle(0, 0,graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height), Color.White);
             if(Globals.ShipsStatus >= 1)
                 _base.Draw(spriteBatch);
@@ -95,7 +109,31 @@ namespace CannonGame
                 astroid.CallAnimation(2,spriteBatch);
             }
 
-            _overlay.Draw(spriteBatch);            
+            _overlay.Draw(spriteBatch);
+            if (isPause)
+                DrawPauseScreen(spriteBatch);         
+        }
+
+        public void DrawPauseScreen(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Game1.Pause, new Rectangle(0, 0, 1280, 720), Color.White);
+        }
+
+        private void CheckForPause(Keys key)
+        {
+            if (Keyboard.GetState().IsKeyDown(key))
+            {
+                if (!isPauseKeyDownHandled)
+                {
+                    isPause = !isPause;
+                    isPauseKeyDownHandled = true;
+                }
+            }
+            else
+            {
+                isPauseKeyDownHandled = false;
+            }
+
         }
     }
 }

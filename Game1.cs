@@ -7,11 +7,12 @@ namespace CannonGame
 {
     public class Game1 : Game
     {
-        public static Texture2D Cannon, Astroid, Bullet, Background, HitBox, Base, BlackBar, Bar, BarShade, Glow, bbBullet, bbGlow, AstroidSheet;
+        public static Texture2D Cannon, Astroid, Bullet, Background, HitBox, Base, BlackBar, Bar, BarShade, Glow, bbBullet, bbGlow, AstroidSheet, Splash, PlayButton, Controls, Pause, Esc;
         public static SpriteFont spriteFont;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private AstroidGame astroidGame;
+        public SplashScreen splashScreen;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -49,9 +50,21 @@ namespace CannonGame
             Glow = Content.Load<Texture2D>("Blur");
             bbBullet = Content.Load<Texture2D>("bbBullet");
             bbGlow = Content.Load<Texture2D>("bbGlow");
+            Splash = Content.Load<Texture2D>("Splash");
+            PlayButton = Content.Load<Texture2D>("PlayButton");
+            Controls = Content.Load<Texture2D>("Controls");
+            Pause = Content.Load<Texture2D>("Pause");
+            Esc = Content.Load<Texture2D>("EscButton");
+
 
             astroidGame = new AstroidGame(_graphics);
-
+            splashScreen = new SplashScreen()
+            {
+                input = new Input()
+                {
+                    Pause = Keys.E,
+                }
+            };
         }
 
         protected override void Update(GameTime gameTime)
@@ -60,8 +73,10 @@ namespace CannonGame
                 Exit();
 
             // TODO: Add your update logic here
-            astroidGame.Update(gameTime);
-            Debug.WriteLine(Globals.ShipsStatus);
+            splashScreen.Update(gameTime);
+            if (splashScreen.Play())
+                astroidGame.Update(gameTime);
+
 
             base.Update(gameTime);
         }
@@ -72,7 +87,12 @@ namespace CannonGame
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            astroidGame.Draw(_spriteBatch);
+
+            if (!splashScreen.Play())
+                splashScreen.DrawSplash(_spriteBatch);
+            else
+                astroidGame.Draw(_spriteBatch);
+
             _spriteBatch.End();
             base.Draw(gameTime);
         }

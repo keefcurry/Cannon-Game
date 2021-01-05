@@ -18,6 +18,7 @@ namespace CannonGame
         int ammoScore = 0;
         float bulletWidth = 6.4f * 8;
         float bulletHeight = 6.4f * 7;
+        public Keys ReturnPause { get; set; }
         public Cannon(Texture2D texture) : base(texture,null)
         {
             texture = Game1.Cannon;
@@ -27,8 +28,8 @@ namespace CannonGame
         {
             //if(Bullet!=null)
             // Bullet.Update(gameTime, sprites);
-            IncreaseAmmo();
             hitBoxInit();
+            IncreaseAmmo();
             CannonControls();
 
             base.Update(gameTime, sprites);
@@ -85,6 +86,8 @@ namespace CannonGame
                     hitbox.Draw(spriteBatch);
         }
 
+
+
         private void rotateBox()
         {
             if (hitboxes != null)
@@ -135,11 +138,14 @@ namespace CannonGame
                 Rotation -= 0.05f;
             if (Keyboard.GetState().IsKeyDown(Input.RotateRight))
                 Rotation += 0.05f;
+            if (Keyboard.GetState().IsKeyDown(Input.Pause))
+                ReturnPause = Keys.E;
             Input.GetState();
             if (Input.HasBeenPressed(Keys.Space))
             {
                 rotateBox();
                 Debug.WriteLine("Shoot");
+                shootBox();
             }
             shootBox();
 
