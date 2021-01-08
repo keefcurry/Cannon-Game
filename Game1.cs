@@ -77,6 +77,22 @@ namespace CannonGame
             if (splashScreen.Play())
                 astroidGame.Update(gameTime);
 
+            if (Globals.ShipsStatus <= 0)
+            {
+                Globals.Score = 0;
+                Globals.ShipsStatus = 100f;
+                astroidGame = new AstroidGame(_graphics);
+                splashScreen = new SplashScreen()
+                {
+                    input = new Input()
+                    {
+                        Pause = Keys.E,
+                    }
+                };
+                
+            }
+
+                
 
             base.Update(gameTime);
         }
